@@ -4,9 +4,12 @@ import FreetCollection from '../freet/collection';
 import UserCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as util from './util';
+import ReplyCollection from '../reply/collection';
+import FollowerCollection from '../follower/collection';
+import FriendCollection from '../friend/collection';
+import CommunityCollection from '../community/collection';
 
 const router = express.Router();
-
 /**
  * Get the signed in user
  * TODO: may need better route and documentation
@@ -52,7 +55,8 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const user = await UserCollection.findOneByUsernameAndPassword(
-      req.body.username, req.body.password
+      req.body.username,
+      req.body.password
     );
     req.session.userId = user._id.toString();
     res.status(201).json({
@@ -73,9 +77,7 @@ router.post(
  */
 router.delete(
   '/session',
-  [
-    userValidator.isUserLoggedIn
-  ],
+  [userValidator.isUserLoggedIn],
   (req: Request, res: Response) => {
     req.session.userId = undefined;
     res.status(200).json({
@@ -106,7 +108,10 @@ router.post(
     userValidator.isValidPassword
   ],
   async (req: Request, res: Response) => {
-    const user = await UserCollection.addOne(req.body.username, req.body.password);
+    const user = await UserCollection.addOne(
+      req.body.username,
+      req.body.password
+    );
     req.session.userId = user._id.toString();
     res.status(201).json({
       message: `Your account was created successfully. You have been logged in as ${user.username}`,
@@ -155,13 +160,15 @@ router.patch(
  */
 router.delete(
   '/',
-  [
-    userValidator.isUserLoggedIn
-  ],
+  [userValidator.isUserLoggedIn],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     await UserCollection.deleteOne(userId);
     await FreetCollection.deleteMany(userId);
+    await ReplyCollection.deleteMany(userId);
+    await FollowerCollection.deleteAllByUserId(userId);
+    await FriendCollection.deleteAllByUserId(userId);
+    await CommunityCollection.deleteAllByOwner(userId);
     req.session.userId = undefined;
     res.status(200).json({
       message: 'Your account has been deleted successfully.'

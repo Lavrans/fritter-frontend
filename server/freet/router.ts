@@ -1,9 +1,9 @@
-import type {NextFunction, Request, Response} from 'express';
-import express from 'express';
-import FreetCollection from './collection';
-import * as userValidator from '../user/middleware';
-import * as freetValidator from '../freet/middleware';
-import * as util from './util';
+import type { NextFunction, Request, Response } from "express";
+import express from "express";
+import FreetCollection from "./collection";
+import * as userValidator from "../user/middleware";
+import * as freetValidator from "../freet/middleware";
+import * as util from "./util";
 
 const router = express.Router();
 
@@ -18,7 +18,7 @@ const router = express.Router();
 /**
  * Get freets by author.
  *
- * @name GET /api/freets?author=username
+ * @name GET /api/freets?username
  *
  * @return {FreetResponse[]} - An array of freets created by user with username, author
  * @throws {400} - If author is not given
@@ -26,7 +26,7 @@ const router = express.Router();
  *
  */
 router.get(
-  '/',
+  "/",
   async (req: Request, res: Response, next: NextFunction) => {
     // Check if author query parameter was supplied
     if (req.query.author !== undefined) {
@@ -38,11 +38,11 @@ router.get(
     const response = allFreets.map(util.constructFreetResponse);
     res.status(200).json(response);
   },
-  [
-    userValidator.isAuthorExists
-  ],
+  [userValidator.isAuthorExists],
   async (req: Request, res: Response) => {
-    const authorFreets = await FreetCollection.findAllByUsername(req.query.author as string);
+    const authorFreets = await FreetCollection.findAllByUsername(
+      req.query.author as string
+    );
     const response = authorFreets.map(util.constructFreetResponse);
     res.status(200).json(response);
   }
@@ -60,18 +60,24 @@ router.get(
  * @throws {413} - If the freet content is more than 140 characters long
  */
 router.post(
-  '/',
+  "/",
   [
     userValidator.isUserLoggedIn,
-    freetValidator.isValidFreetContent
+    freetValidator.isValidFreetContent,
+    freetValidator.isCommunityFreetInValidCommunity,
   ],
   async (req: Request, res: Response) => {
-    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const freet = await FreetCollection.addOne(userId, req.body.content);
+    const userId = (req.session.userId as string) ?? ""; // Will not be an empty string since its validated in isUserLoggedIn
+    const freet = await FreetCollection.addOne(
+      userId,
+      req.body.content,
+      Boolean(req.body.friendsOnly),
+      req.body.community
+    );
 
     res.status(201).json({
-      message: 'Your freet was created successfully.',
-      freet: util.constructFreetResponse(freet)
+      message: "Your freet was created successfully.",
+      freet: util.constructFreetResponse(freet),
     });
   }
 );
@@ -87,16 +93,16 @@ router.post(
  * @throws {404} - If the freetId is not valid
  */
 router.delete(
-  '/:freetId?',
+  "/:freetId?",
   [
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists,
-    freetValidator.isValidFreetModifier
+    freetValidator.isValidFreetModifier,
   ],
   async (req: Request, res: Response) => {
     await FreetCollection.deleteOne(req.params.freetId);
     res.status(200).json({
-      message: 'Your freet was deleted successfully.'
+      message: "Your freet was deleted successfully.",
     });
   }
 );
@@ -115,20 +121,23 @@ router.delete(
  * @throws {413} - If the freet content is more than 140 characters long
  */
 router.patch(
-  '/:freetId?',
+  "/:freetId?",
   [
     userValidator.isUserLoggedIn,
     freetValidator.isFreetExists,
     freetValidator.isValidFreetModifier,
-    freetValidator.isValidFreetContent
+    freetValidator.isValidFreetContent,
   ],
   async (req: Request, res: Response) => {
-    const freet = await FreetCollection.updateOne(req.params.freetId, req.body.content);
+    const freet = await FreetCollection.updateOne(
+      req.params.freetId,
+      req.body.content
+    );
     res.status(200).json({
-      message: 'Your freet was updated successfully.',
-      freet: util.constructFreetResponse(freet)
+      message: "Your freet was updated successfully.",
+      freet: util.constructFreetResponse(freet),
     });
   }
 );
 
-export {router as freetRouter};
+export { router as freetRouter };

@@ -1,6 +1,7 @@
-import type {Types} from 'mongoose';
-import {Schema, model} from 'mongoose';
-import type {User} from '../user/model';
+import type { Types } from "mongoose";
+import { Schema, model } from "mongoose";
+import type { User } from "../user/model";
+import ReplyModel from "../reply/model";
 
 /**
  * This file defines the properties stored in a Freet
@@ -14,6 +15,7 @@ export type Freet = {
   dateCreated: Date;
   content: string;
   dateModified: Date;
+  friendsOnly: boolean;
 };
 
 export type PopulatedFreet = {
@@ -22,6 +24,7 @@ export type PopulatedFreet = {
   dateCreated: Date;
   content: string;
   dateModified: Date;
+  friendsOnly: boolean;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -33,24 +36,47 @@ const FreetSchema = new Schema<Freet>({
     // Use Types.ObjectId outside of the schema
     type: Schema.Types.ObjectId,
     required: true,
-    ref: 'User'
+    ref: "User",
   },
   // The date the freet was created
   dateCreated: {
     type: Date,
-    required: true
+    required: true,
   },
   // The content of the freet
   content: {
     type: String,
-    required: true
+    required: true,
   },
   // The date the freet was modified
   dateModified: {
     type: Date,
-    required: true
-  }
+    required: true,
+  },
+  friendsOnly: {
+    type: Boolean,
+    required: true,
+  },
+});
+FreetSchema.pre("deleteOne", async function (this: any, next) {
+  const query = this.getQuery();
+  await ReplyModel.deleteMany({
+    parent: query._id,
+    parentType: "Freet",
+  }).exec();
+  next();
+});
+FreetSchema.pre("deleteMany", async function (this: any, next) {
+  const query = this.getQuery();
+  const freets = await FreetModel.find({ authorId: query.authorId });
+  freets.forEach(async (f) => {
+    await ReplyModel.deleteMany({
+      parent: f._id,
+      parentType: "Freet",
+    }).exec();
+  });
+  next();
 });
 
-const FreetModel = model<Freet>('Freet', FreetSchema);
+const FreetModel = model<Freet>("Freet", FreetSchema);
 export default FreetModel;

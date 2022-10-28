@@ -7,6 +7,7 @@ type UserResponse = {
   _id: string;
   username: string;
   dateJoined: string;
+  feed: string;
 };
 
 /**
@@ -15,7 +16,8 @@ type UserResponse = {
  * @param {Date} date - A date object
  * @returns {string} - formatted date as string
  */
-const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:mm:ss a');
+const formatDate = (date: Date): string =>
+  moment(date).format('MMMM Do YYYY, h:mm:ss a');
 
 /**
  * Transform a raw User object from the database into an object
@@ -35,10 +37,9 @@ const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
   return {
     ...userCopy,
     _id: userCopy._id.toString(),
-    dateJoined: formatDate(user.dateJoined)
+    dateJoined: formatDate(user.dateJoined),
+    feed: userCopy.feed.toString()
   };
 };
 
-export {
-  constructUserResponse
-};
+export {constructUserResponse};
