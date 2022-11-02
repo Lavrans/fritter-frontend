@@ -1,6 +1,6 @@
-import type {HydratedDocument} from 'mongoose';
-import moment from 'moment';
-import type {Reply, PopulatedReply} from '../reply/model';
+import type { HydratedDocument } from "mongoose";
+import moment from "moment";
+import type { Reply, PopulatedReply } from "../reply/model";
 
 type ReplyResponse = {
   _id: string;
@@ -9,6 +9,7 @@ type ReplyResponse = {
   content: string;
   dateModified: string;
   parent: string;
+  parentType: string;
 };
 
 /**
@@ -18,7 +19,7 @@ type ReplyResponse = {
  * @returns {string} - formatted date as string
  */
 const formatDate = (date: Date): string =>
-  moment(date).format('MMMM Do YYYY, h:mm:ss a');
+  moment(date).format("MMMM Do YYYY, h:mm:ss a");
 
 /**
  * Transform a raw Reply object from the database into an object
@@ -32,20 +33,19 @@ const constructReplyResponse = (
 ): ReplyResponse => {
   const replyCopy: PopulatedReply = {
     ...reply.toObject({
-      versionKey: false // Cosmetics; prevents returning of __v property
-    })
+      versionKey: false, // Cosmetics; prevents returning of __v property
+    }),
   };
-  const {username} = replyCopy.authorId;
+  const { username } = replyCopy.authorId;
   delete replyCopy.authorId;
-  delete replyCopy.parentType;
   return {
     ...replyCopy,
     _id: replyCopy._id.toString(),
     author: username,
     dateCreated: formatDate(reply.dateCreated),
     dateModified: formatDate(reply.dateModified),
-    parent: replyCopy.parent.toString()
+    parent: replyCopy.parent.toString(),
   };
 };
 
-export {constructReplyResponse};
+export { constructReplyResponse };

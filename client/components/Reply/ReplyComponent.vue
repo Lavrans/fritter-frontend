@@ -1,16 +1,21 @@
-<!-- Reusable component representing a single freet and its actions -->
+<!-- Reusable component representing a single reply and its actions -->
 <!-- We've tagged some elements with classes; consider writing CSS using those classes to style them... -->
 
 <template>
-  <article class="freet">
+  <article class="reply">
     <header>
-      <h3 v-if="singleView">Freet</h3>
-      <h3 class="author">@{{ freet.author }}</h3>
-      <div v-if="$store.state.username === freet.author" class="actions">
+      <router-link
+        v-if="singleView"
+        :to="`/${reply.parentType.toLowerCase()}/${reply.parent}`"
+        ><button>Back</button></router-link
+      >
+      <h3 v-if="singleView">Reply</h3>
+      <h3 class="author">@{{ reply.author }}</h3>
+      <div v-if="$store.state.username === reply.author" class="actions">
         <button v-if="editing" @click="submitEdit">✅ Save changes</button>
         <button v-if="editing" @click="stopEditing">🚫 Discard changes</button>
         <button v-if="!editing" @click="startEditing">✏️ Edit</button>
-        <button @click="deleteFreet">🗑️ Delete</button>
+        <button @click="deleteReply">🗑️ Delete</button>
       </div>
     </header>
     <textarea
@@ -20,13 +25,13 @@
       @input="draft = $event.target.value"
     />
     <p v-else class="content">
-      {{ freet.content }}
+      {{ reply.content }}
     </p>
     <p class="info">
-      Posted at {{ freet.dateModified }}
-      <i v-if="freet.edited">(edited)</i>
+      Posted at {{ reply.dateModified }}
+      <i v-if="reply.edited">(edited)</i>
     </p>
-    <router-link :to="{ name: 'Freet', params: { id: freet._id } }"
+    <router-link :to="{ name: 'Reply', params: { id: reply._id } }"
       ><button v-if="!singleView">Replies</button></router-link
     >
     <section class="alerts">
@@ -43,11 +48,15 @@
 
 <script>
 export default {
-  name: "FreetComponent",
+  name: "ReplyComponent",
   props: {
-    // Data from the stored freet
-    freet: {
+    // Data from the stored reply
+    reply: {
       type: Object,
+      required: true,
+    },
+    parent: {
+      type: String,
       required: true,
     },
     singleView: {
@@ -55,37 +64,49 @@ export default {
       default: false,
     },
   },
+  created() {
+    this.$watch(
+      () => this.$route.params,
+      (toParams, previousParams) => {
+        this.$store.commit("refreshReply", toParams.id);
+        this.$store.commit("refreshReplies", {
+          id: toParams.id,
+          parent: "reply",
+        });
+      }
+    );
+  },
   data() {
     return {
-      editing: false, // Whether or not this freet is in edit mode
-      draft: this.freet.content, // Potentially-new content for this freet
-      alerts: {}, // Displays success/error messages encountered during freet modification
+      editing: false, // Whether or not this reply is in edit mode
+      draft: this.reply.content, // Potentially-new content for this reply
+      alerts: {}, // Displays success/error messages encountered during reply modification
     };
   },
   methods: {
     startEditing() {
       /**
-       * Enables edit mode on this freet.
+       * Enables edit mode on this reply.
        */
-      this.editing = true; // Keeps track of if a freet is being edited
-      this.draft = this.freet.content; // The content of our current "draft" while being edited
+      this.editing = true; // Keeps track of if a reply is being edited
+      this.draft = this.reply.content; // The content of our current "draft" while being edited
     },
     stopEditing() {
       /**
-       * Disables edit mode on this freet.
+       * Disables edit mode on this reply.
        */
       this.editing = false;
-      this.draft = this.freet.content;
+      this.draft = this.reply.content;
     },
-    deleteFreet() {
+    deleteReply() {
       /**
-       * Deletes this freet.
+       * Deletes this reply.
        */
       const params = {
         method: "DELETE",
         callback: () => {
           this.$store.commit("alert", {
-            message: "Successfully deleted freet!",
+            message: "Successfully deleted reply!",
             status: "success",
           });
         },
@@ -94,19 +115,19 @@ export default {
     },
     submitEdit() {
       /**
-       * Updates freet to have the submitted draft content.
+       * Updates reply to have the submitted draft content.
        */
-      if (this.freet.content === this.draft) {
+      if (this.reply.content === this.draft) {
         const error =
-          "Error: Edited freet content should be different than current freet content.";
+          "Error: Edited reply content should be different than current reply content.";
         this.$set(this.alerts, error, "error"); // Set an alert to be the error text, timeout of 3000 ms
         setTimeout(() => this.$delete(this.alerts, error), 3000);
         return;
       }
 
       const params = {
-        method: "PATCH",
-        message: "Successfully edited freet!",
+        method: "PUT",
+        message: "Successfully edited reply!",
         body: JSON.stringify({ content: this.draft }),
         callback: () => {
           this.$set(this.alerts, params.message, "success");
@@ -114,11 +135,10 @@ export default {
         },
       };
       this.request(params);
-      this.$store.commit("refreshFreet", this.freet._id);
     },
     async request(params) {
       /**
-       * Submits a request to the freet's endpoint
+       * Submits a request to the reply's endpoint
        * @param params - Options for the request
        * @param params.body - Body for the request, if it exists
        * @param params.callback - Function to run if the the request succeeds
@@ -132,15 +152,21 @@ export default {
       }
 
       try {
-        const r = await fetch(`/api/freets/${this.freet._id}`, options);
+        const r = await fetch(`/api/replies/${this.reply._id}`, options);
         if (!r.ok) {
           const res = await r.json();
           throw new Error(res.error);
         }
 
         this.editing = false;
-        this.$store.commit("refreshFreets");
-        this.$emit("edit", this.freet._id);
+        if (this.singleView) {
+          this.$store.commit("refreshReply", this.reply._id);
+        } else {
+          this.$store.commit("refreshReplies", {
+            id: this.reply.parent,
+            parent: this.reply.parentType.toLowerCase(),
+          });
+        }
 
         params.callback();
       } catch (e) {
@@ -153,7 +179,7 @@ export default {
 </script>
 
 <style scoped>
-.freet {
+.reply {
   border: 1px solid #111;
   padding: 20px;
   position: relative;

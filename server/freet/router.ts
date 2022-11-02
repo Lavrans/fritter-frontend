@@ -82,6 +82,16 @@ router.post(
   }
 );
 
+router.get(
+  "/:freetId",
+  [freetValidator.isFreetExists],
+  async (req: Request, res: Response) => {
+    const freet = await FreetCollection.findOne(req.params.freetId);
+
+    res.status(200).json(util.constructFreetResponse(freet));
+  }
+);
+
 /**
  * Delete a freet
  *

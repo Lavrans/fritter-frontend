@@ -48,6 +48,16 @@ router.get(
   }
 );
 
+router.get(
+  "/:replyId",
+  [replyValidator.isReplyExists],
+  async (req: Request, res: Response) => {
+    const reply = await ReplyCollection.findOne(req.params.replyId);
+    const response = util.constructReplyResponse(reply);
+    res.status(200).json(response);
+  }
+);
+
 /**
  * Create a new reply.
  *
