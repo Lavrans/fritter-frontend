@@ -17,6 +17,7 @@ const store = new Vuex.Store({
     reply: {},
     username: null, // Username of the logged in user
     alerts: {}, // global success/error messages encountered during submissions to non-visible forms
+    user: {},
   },
   mutations: {
     alert(state, payload) {
@@ -54,7 +55,7 @@ const store = new Vuex.Store({
        * Request the server for the currently available freets.
        */
       const url = state.filter
-        ? `/api/users/${state.filter}/freets`
+        ? `/api/freets?author=${state.filter}`
         : "/api/freets";
       const res = await fetch(url).then(async (r) => r.json());
       state.freets = res;
@@ -89,6 +90,13 @@ const store = new Vuex.Store({
       const res = await fetch(url);
       const json = await res.json();
       if (res.status === 200) state.reply = json;
+      if (res.status === 404) router.push("/notFound");
+    },
+    async refreshUser(state, username) {
+      const url = `/api/users/${username}`;
+      const res = await fetch(url);
+      const json = await res.json();
+      if (res.status === 200) state.user = json.user;
       if (res.status === 404) router.push("/notFound");
     },
   },

@@ -5,7 +5,12 @@
   <article class="freet">
     <header>
       <h3 v-if="singleView">Freet</h3>
-      <h3 class="author">@{{ freet.author }}</h3>
+      <router-link
+        :to="{ name: 'User', params: { username: freet.author } }"
+        class="author-link"
+      >
+        <h3 class="author">@{{ freet.author }}</h3>
+      </router-link>
       <div v-if="$store.state.username === freet.author" class="actions">
         <button v-if="editing" @click="submitEdit">✅ Save changes</button>
         <button v-if="editing" @click="stopEditing">🚫 Discard changes</button>
@@ -157,5 +162,8 @@ export default {
   border: 1px solid #111;
   padding: 20px;
   position: relative;
+}
+.author-link {
+  text-decoration: none;
 }
 </style>
