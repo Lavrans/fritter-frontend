@@ -41,7 +41,8 @@ router.get(
   [userValidator.isAuthorExists],
   async (req: Request, res: Response) => {
     const authorFreets = await FreetCollection.findAllByUsername(
-      req.query.author as string
+      req.query.author as string,
+      req.session.userId
     );
     const response = authorFreets.map(util.constructFreetResponse);
     res.status(200).json(response);

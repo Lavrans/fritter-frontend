@@ -79,7 +79,9 @@ class FreetCollection {
    */
   static async findAll(): Promise<Array<HydratedDocument<Freet>>> {
     // Retrieves freets and sorts them from most to least recent
-    return FreetModel.find({}).sort({ dateModified: -1 }).populate("authorId");
+    return FreetModel.find({ friendsOnly: false })
+      .sort({ dateModified: -1 })
+      .populate("authorId");
   }
 
   /**
@@ -89,10 +91,18 @@ class FreetCollection {
    * @return {Promise<HydratedDocument<Freet>[]>} - An array of all of the freets
    */
   static async findAllByUsername(
-    username: string
+    username: string,
+    userId: Types.ObjectId | string = null
   ): Promise<Array<HydratedDocument<Freet>>> {
     const author = await UserCollection.findOneByUsername(username);
-    return FreetModel.find({ authorId: author._id })
+    let filter: any = { authorId: author._id };
+    if (userId !== null) {
+      const friends = await FriendCollection.findOne(userId, author._id);
+      if (friends === null && author._id.toString() !== userId.toString()) {
+        filter.friendsOnly = false;
+      }
+    }
+    return FreetModel.find(filter)
       .sort({ dateModified: -1 })
       .populate("authorId");
   }
