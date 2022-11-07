@@ -1,27 +1,32 @@
 <!-- Form for creating freets (block style) -->
 
 <script>
-import BlockForm from '@/components/common/BlockForm.vue';
+import BlockForm from "@/components/common/BlockForm.vue";
 
 export default {
-  name: 'CreateFreetForm',
+  name: "CreateFreetForm",
   mixins: [BlockForm],
   data() {
     return {
-      url: '/api/freets',
-      method: 'POST',
+      url: "/api/freets",
+      method: "POST",
       hasBody: true,
       fields: [
-        {id: 'content', label: 'Content', value: ''}
+        { id: "content", label: "Content", value: "" },
+        {
+          id: "friendsOnly",
+          label: "Friends Only",
+          type: "checkbox",
+        },
       ],
-      title: 'Create a freet',
+      title: "Create a freet",
       refreshFreets: true,
       callback: () => {
-        const message = 'Successfully created a freet!';
-        this.$set(this.alerts, message, 'success');
+        const message = "Successfully created a freet!";
+        this.$set(this.alerts, message, "success");
         setTimeout(() => this.$delete(this.alerts, message), 3000);
-      }
+      },
     };
-  }
+  },
 };
 </script>

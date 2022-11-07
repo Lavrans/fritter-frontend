@@ -15,7 +15,8 @@
         />
         <input
           v-else
-          :type="field.id === 'password' ? 'password' : 'text'"
+          :type="field.type !== undefined ? field.type : 'text'"
+          :ref="field.id"
           :name="field.id"
           :value="field.value"
           @input="field.value = $event.target.value"
@@ -71,8 +72,11 @@ export default {
         options.body = JSON.stringify(
           Object.fromEntries(
             this.fields.map((field) => {
-              const { id, value } = field;
+              let { id, value } = field;
               field.value = "";
+              if (id === "friendsOnly") {
+                value = this.$refs.friendsOnly[0].checked;
+              }
               return [id, value];
             })
           )
