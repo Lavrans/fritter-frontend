@@ -27,9 +27,7 @@ export default {
       required: true,
     },
   },
-  mounted() {
-    console.log(this.user);
-  },
+  mounted() {},
   data() {
     return {
       alerts: {}, // Displays success/error messages encountered during freet modification

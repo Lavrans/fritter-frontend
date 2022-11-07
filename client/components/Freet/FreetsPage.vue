@@ -14,9 +14,7 @@
       </header>
       <article>
         <h3>
-          <router-link to="/login">
-            Sign in
-          </router-link>
+          <router-link to="/login"> Sign in </router-link>
           to create, edit, and delete freets.
         </h3>
       </article>
@@ -49,9 +47,7 @@
           :freet="freet"
         />
       </section>
-      <article
-        v-else
-      >
+      <article v-else>
         <h3>No freets found.</h3>
       </article>
     </section>
@@ -64,11 +60,11 @@ import CreateFreetForm from '@/components/Freet/CreateFreetForm.vue';
 import GetFreetsForm from '@/components/Freet/GetFreetsForm.vue';
 
 export default {
-  name: 'FreetPage',
-  components: {FreetComponent, GetFreetsForm, CreateFreetForm},
+  name: "FreetPage",
+  components: { FreetComponent, GetFreetsForm, CreateFreetForm },
   mounted() {
     this.$refs.getFreetsForm.submit();
-  }
+  },
 };
 </script>
 
@@ -78,14 +74,15 @@ section {
   flex-direction: column;
 }
 
-header, header > * {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+header,
+header > * {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 button {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 section .scrollbox {
