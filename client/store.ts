@@ -18,6 +18,8 @@ const store = new Vuex.Store({
     username: null, // Username of the logged in user
     alerts: {}, // global success/error messages encountered during submissions to non-visible forms
     user: {},
+    feedId: null,
+    feed: [],
   },
   mutations: {
     alert(state, payload) {
@@ -35,6 +37,9 @@ const store = new Vuex.Store({
        * @param username - new username to set
        */
       state.username = username;
+    },
+    setFeedId(state, id) {
+      state.feedId = id;
     },
     updateFilter(state, filter) {
       /**
@@ -84,6 +89,18 @@ const store = new Vuex.Store({
       const json = await res.json();
       if (res.status === 200) state.freet = json;
       if (res.status === 404) router.push("/notFound");
+    },
+    async refreshFeed(state) {
+      if (state.feedId === null) {
+        state.feed = null;
+        router.push("/login");
+      } else {
+        const url = `/api/feed/${state.feedId}`;
+        const res = await fetch(url);
+        const json = await res.json();
+        if (res.status === 200) state.feed = json.feed.content;
+        if (res.status === 404) router.push("/notFound");
+      }
     },
     async refreshReply(state, replyId) {
       const url = `/api/replies/${replyId}`;

@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import FreetsPage from "./components/Freet/FreetsPage.vue";
+import FeedPage from "./components/Feed/FeedPage.vue";
 import UserPage from "./components/User/UserPage.vue";
 import SingleFreet from "./components/Freet/SingleFreet.vue";
 import SingleReply from "./components/Reply/SingleReply.vue";
@@ -12,6 +13,7 @@ Vue.use(VueRouter);
 
 const routes = [
   { path: "/", name: "Home", component: FreetsPage },
+  { path: "/feed", name: "Feed", component: FeedPage },
   { path: "/freet/:id", name: "Freet", component: SingleFreet },
   { path: "/reply/:id", name: "Reply", component: SingleReply },
   { path: "/user/:username", name: "User", component: UserPage },

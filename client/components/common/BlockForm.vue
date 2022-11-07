@@ -94,6 +94,7 @@ export default {
             "setUsername",
             res.user ? res.user.username : null
           );
+          this.$store.commit("setFeedId", res.user ? res.user.feed : null);
         }
 
         if (this.refreshFreets) {

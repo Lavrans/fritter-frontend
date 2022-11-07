@@ -34,7 +34,9 @@ class FeedCollection {
   static async findOne(
     feedId: Types.ObjectId | string
   ): Promise<HydratedDocument<Feed>> {
-    return FeedModel.findOne({ _id: feedId }).populate("content");
+    return FeedModel.findOne({ _id: feedId })
+      .populate("content")
+      .populate({ path: "content", populate: { path: "authorId" } });
   }
 
   /**

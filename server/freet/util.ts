@@ -1,6 +1,6 @@
-import type {HydratedDocument} from 'mongoose';
-import moment from 'moment';
-import type {Freet, PopulatedFreet} from '../freet/model';
+import type { HydratedDocument } from "mongoose";
+import moment from "moment";
+import type { Freet, PopulatedFreet } from "../freet/model";
 
 // Update this if you add a property to the Freet type!
 type FreetResponse = {
@@ -19,7 +19,7 @@ type FreetResponse = {
  * @returns {string} - formatted date as string
  */
 const formatDate = (date: Date): string =>
-  moment(date).format('MMMM Do YYYY, h:mm:ss a');
+  moment(date).format("MMMM Do YYYY, h:mm:ss a");
 
 /**
  * Transform a raw Freet object from the database into an object
@@ -33,18 +33,18 @@ const constructFreetResponse = (
 ): FreetResponse => {
   const freetCopy: PopulatedFreet = {
     ...freet.toObject({
-      versionKey: false // Cosmetics; prevents returning of __v property
-    })
+      versionKey: false, // Cosmetics; prevents returning of __v property
+    }),
   };
-  const {username} = freetCopy.authorId;
+  const { username } = freetCopy.authorId;
   delete freetCopy.authorId;
   return {
     ...freetCopy,
     _id: freetCopy._id.toString(),
     author: username,
     dateCreated: formatDate(freet.dateCreated),
-    dateModified: formatDate(freet.dateModified)
+    dateModified: formatDate(freet.dateModified),
   };
 };
 
-export {constructFreetResponse};
+export { constructFreetResponse, FreetResponse };
