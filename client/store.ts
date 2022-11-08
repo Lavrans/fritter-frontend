@@ -20,6 +20,7 @@ const store = new Vuex.Store({
     user: {},
     feedId: null,
     feed: [],
+    communities: [],
   },
   mutations: {
     alert(state, payload) {
@@ -64,6 +65,14 @@ const store = new Vuex.Store({
         : "/api/freets";
       const res = await fetch(url).then(async (r) => r.json());
       state.freets = res;
+    },
+    async refreshCommunities(state) {
+      /**
+       * Request the server for the currently available freets.
+       */
+      const url = "/api/communities";
+      const res = await fetch(url).then(async (r) => r.json());
+      state.communities = res.communities;
     },
     updateReplies(state, replies) {
       /**

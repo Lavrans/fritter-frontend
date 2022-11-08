@@ -9,9 +9,8 @@
       <h1 class="title">Fritter</h1>
     </div>
     <div class="right">
-      <router-link @click="$store.commit('updateFilter', '')" to="/">
-        Home
-      </router-link>
+      <router-link to="/"> Home </router-link>
+      <router-link to="/communities"> Communities </router-link>
       <router-link v-if="$store.state.username" to="/account">
         Account
       </router-link>

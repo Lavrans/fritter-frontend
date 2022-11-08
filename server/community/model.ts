@@ -1,5 +1,6 @@
-import type {Types} from 'mongoose';
-import {Schema, model} from 'mongoose';
+import type { Types } from "mongoose";
+import { Schema, model } from "mongoose";
+import { User } from "../user/model";
 
 /**
  * This file defines the properties stored in a Community
@@ -14,6 +15,13 @@ export type Community = {
   members: Types.ObjectId[];
   feed: Types.ObjectId;
 };
+export type PopulatedCommunity = {
+  _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
+  name: string;
+  owner: User;
+  members: Types.ObjectId[];
+  feed: Types.ObjectId;
+};
 
 // Mongoose schema definition for interfacing with a MongoDB table
 // Communitys stored in this table will have these fields, with the
@@ -21,26 +29,26 @@ export type Community = {
 const CommunitySchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   owner: {
     type: Schema.Types.ObjectId,
     required: true,
-    ref: 'User'
+    ref: "User",
   },
   members: [
     {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: 'User'
-    }
+      ref: "User",
+    },
   ],
   feed: {
     type: Schema.Types.ObjectId,
     required: true,
-    ref: 'Feed'
-  }
+    ref: "Feed",
+  },
 });
 
-const CommunityModel = model<Community>('Community', CommunitySchema);
+const CommunityModel = model<Community>("Community", CommunitySchema);
 export default CommunityModel;
