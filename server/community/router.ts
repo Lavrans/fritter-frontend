@@ -97,14 +97,18 @@ router.get(
     );
     res.status(200).json({
       message: "Success",
-      community: util.constructCommunityResponse(community),
+      community: util.constructCommunityResponse(
+        util.addIsMember(community, req.session?.userId)
+      ),
     });
   }
 );
 
 router.get("/", async (req: Request, res: Response) => {
   const communityDocs = await CommunityCollection.findAll();
-  const communities = communityDocs.map(util.constructCommunityResponse);
+  const communities = communityDocs
+    .map((c) => util.addIsMember(c, req.session?.userId))
+    .map(util.constructCommunityResponse);
   res.status(200).json({
     message: "Success",
     communities,

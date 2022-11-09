@@ -21,6 +21,8 @@ const store = new Vuex.Store({
     feedId: null,
     feed: [],
     communities: [],
+    community: {},
+    communityFeed: [],
   },
   mutations: {
     alert(state, payload) {
@@ -74,6 +76,14 @@ const store = new Vuex.Store({
       const res = await fetch(url).then(async (r) => r.json());
       state.communities = res.communities;
     },
+    async refreshCommunity(state, communityName) {
+      /**
+       * Request the server for the currently available freets.
+       */
+      const url = `/api/communities/${communityName}`;
+      const res = await fetch(url).then(async (r) => r.json());
+      state.community = res.community;
+    },
     updateReplies(state, replies) {
       /**
        * Update the stored replies to the provided replies.
@@ -110,6 +120,14 @@ const store = new Vuex.Store({
         if (res.status === 200) state.feed = json.feed.content;
         if (res.status === 404) router.push("/notFound");
       }
+    },
+    async refreshCommunityFeed(state) {
+      const community = state.community;
+      const url = `/api/feed/${community.feed}`;
+      const res = await fetch(url);
+      const json = await res.json();
+      if (res.status === 200) state.communityFeed = json.feed.content;
+      if (res.status === 404) router.push("/notFound");
     },
     async refreshReply(state, replyId) {
       const url = `/api/replies/${replyId}`;

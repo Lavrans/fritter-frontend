@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import FreetsPage from "./components/Freet/FreetsPage.vue";
 import FeedPage from "./components/Feed/FeedPage.vue";
 import CommunitiesPage from "./components/Community/CommunitiesPage.vue";
+import CommunityPage from "./components/Community/CommunityPage.vue";
 import UserPage from "./components/User/UserPage.vue";
 import SingleFreet from "./components/Freet/SingleFreet.vue";
 import SingleReply from "./components/Reply/SingleReply.vue";
@@ -16,6 +17,11 @@ const routes = [
   { path: "/", name: "Home", component: FreetsPage },
   { path: "/feed", name: "Feed", component: FeedPage },
   { path: "/communities", name: "Communities", component: CommunitiesPage },
+  {
+    path: "/communities/:communityName",
+    name: "Community",
+    component: CommunityPage,
+  },
   { path: "/freet/:id", name: "Freet", component: SingleFreet },
   { path: "/reply/:id", name: "Reply", component: SingleReply },
   { path: "/user/:username", name: "User", component: UserPage },

@@ -1,5 +1,7 @@
-import type { HydratedDocument } from "mongoose";
+import type { HydratedDocument, Types } from "mongoose";
+import { Types as T } from "mongoose";
 import type { PopulatedCommunity } from "./model";
+import type { User } from "../user/model";
 
 type CommunityResponse = {
   _id: string;
@@ -7,6 +9,15 @@ type CommunityResponse = {
   owner: string;
   members: number;
   feed: string;
+  isMember: boolean;
+};
+export type PopulatedCommunityWithIsMember = {
+  _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
+  name: string;
+  owner: User;
+  members: Types.ObjectId[];
+  feed: Types.ObjectId;
+  isMember: boolean;
 };
 
 /**
@@ -18,13 +29,9 @@ type CommunityResponse = {
  * @returns {CommunityResponse} - The community object without the password
  */
 const constructCommunityResponse = (
-  community: HydratedDocument<PopulatedCommunity>
+  community: PopulatedCommunityWithIsMember
 ): CommunityResponse => {
-  const communityCopy: PopulatedCommunity = {
-    ...community.toObject({
-      versionKey: false,
-    }),
-  };
+  const communityCopy: PopulatedCommunityWithIsMember = { ...community };
   const members = communityCopy.members.length;
   const { username } = communityCopy.owner;
   return {
@@ -36,4 +43,22 @@ const constructCommunityResponse = (
   };
 };
 
-export { constructCommunityResponse };
+const addIsMember = (
+  community: HydratedDocument<PopulatedCommunity>,
+  userId: Types.ObjectId | string
+): PopulatedCommunityWithIsMember => {
+  const communityCopy: PopulatedCommunity = {
+    ...community.toObject({
+      versionKey: false,
+    }),
+  };
+  const isMember =
+    communityCopy.members.map((m) => m.toString()).indexOf(userId?.toString()) >
+    -1;
+  const communityWithIsMember: PopulatedCommunityWithIsMember = {
+    ...communityCopy,
+    isMember,
+  };
+  return communityWithIsMember;
+};
+export { constructCommunityResponse, addIsMember };

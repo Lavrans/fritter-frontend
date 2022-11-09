@@ -145,7 +145,7 @@ export default {
 
         this.editing = false;
         this.$store.commit("refreshFreets");
-        this.$emit("edit", this.freet._id);
+        this.$store.commit("refreshCommunityFeed");
 
         params.callback();
       } catch (e) {

@@ -9,9 +9,7 @@ const isMember = async (req: Request, res: Response, next: NextFunction) => {
   const index = community.members.indexOf(req.session.userId);
   if (index < 0) {
     res.status(400).json({
-      error: {
-        communityname: `You are not a member of ${community.name}`,
-      },
+      error: `You are not a member of ${community.name}`,
     });
     return;
   }
@@ -26,9 +24,7 @@ const isNotMember = async (req: Request, res: Response, next: NextFunction) => {
   const index = community.members.indexOf(req.session.userId);
   if (index >= 0) {
     res.status(400).json({
-      error: {
-        communityname: `You are already a member of ${community.name}`,
-      },
+      error: `You are already a member of ${community.name}`,
     });
     return;
   }
@@ -43,9 +39,7 @@ const isOwner = async (req: Request, res: Response, next: NextFunction) => {
   const { owner } = community;
   if (req.session.userId.toString() != owner.toString()) {
     res.status(401).json({
-      error: {
-        communityname: `You are not the owner of ${community.name}`,
-      },
+      error: `You are not the owner of ${community.name}`,
     });
     return;
   }
@@ -60,9 +54,7 @@ const isNotOwner = async (req: Request, res: Response, next: NextFunction) => {
   const { owner } = community;
   if (req.session.userId.toString() == owner.toString()) {
     res.status(400).json({
-      error: {
-        communityname: `You are the owner of ${community.name}`,
-      },
+      error: `You are the owner of ${community.name}`,
     });
     return;
   }

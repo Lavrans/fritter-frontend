@@ -44,6 +44,12 @@ class CommunityCollection {
     owner: Types.ObjectId | string
   ): Promise<HydratedDocument<Community>> {
     const community = await CommunityModel.findOne({ _id: communityId });
+    if (
+      community.members.map((m) => m.toString()).indexOf(owner.toString()) ===
+      -1
+    ) {
+      community.members.push(new T.ObjectId(owner));
+    }
     community.owner = new T.ObjectId(owner);
 
     await community.save();

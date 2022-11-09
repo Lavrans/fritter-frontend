@@ -44,6 +44,12 @@
 <script>
 export default {
   name: "BlockForm",
+  props: {
+    community: {
+      type: String,
+      default: null,
+    },
+  },
   data() {
     /**
      * Options for submitting this form.
@@ -69,18 +75,20 @@ export default {
         credentials: "same-origin", // Sends express-session credentials with request
       };
       if (this.hasBody) {
-        options.body = JSON.stringify(
-          Object.fromEntries(
-            this.fields.map((field) => {
-              let { id, value } = field;
-              field.value = "";
-              if (id === "friendsOnly") {
-                value = this.$refs.friendsOnly[0].checked;
-              }
-              return [id, value];
-            })
-          )
+        const object = Object.fromEntries(
+          this.fields.map((field) => {
+            let { id, value } = field;
+            field.value = "";
+            if (id === "friendsOnly") {
+              value = this.$refs.friendsOnly[0].checked;
+            }
+            return [id, value];
+          })
         );
+        if (this.community !== null) {
+          object.community = this.community;
+        }
+        options.body = JSON.stringify(object);
       }
 
       try {
