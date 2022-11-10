@@ -6,34 +6,40 @@
     <div class="card-body">
       <h3 class="card-title">{{ title }}</h3>
       <article v-if="fields.length">
-        <div v-for="field in fields" :key="field.id">
-          <label class="label justify-around gap-0.5">
+        <div
+          v-for="field in fields"
+          :key="field.id"
+          class="form-control w-full max-w-xs"
+        >
+          <label class="label">
             <span v-if="field.label" class="label-text">
               {{ field.label }}:
-            </span>
-            <textarea
-              v-if="field.id === 'content'"
-              placeholder="Content..."
-              :name="field.id"
-              :value="field.value"
-              :class="field.class ? field.class : ''"
-              @input="field.value = $event.target.value" />
-            <input
-              v-else
-              :type="field.type !== undefined ? field.type : 'text'"
-              :ref="field.id"
-              :name="field.id"
-              :value="field.value"
-              :class="field.class ? field.class : ''"
-              @input="field.value = $event.target.value"
-          /></label>
+            </span></label
+          >
+          <textarea
+            v-if="field.id === 'content'"
+            placeholder="Content..."
+            :name="field.id"
+            :value="field.value"
+            :class="field.class ? field.class : ''"
+            @input="field.value = $event.target.value"
+          />
+          <input
+            v-else
+            :type="field.type !== undefined ? field.type : 'text'"
+            :ref="field.id"
+            :name="field.id"
+            :value="field.value"
+            :class="field.class ? field.class : ''"
+            @input="field.value = $event.target.value"
+          />
         </div>
       </article>
       <article v-else>
         <p>{{ content }}</p>
       </article>
       <label
-        class="btn btn-sm w-36 mx-auto btn-primary"
+        :class="'btn btn-sm w-36 mx-auto ' + submitClass"
         :for="submitId"
         @click="submit"
       >
@@ -74,6 +80,7 @@ export default {
       alerts: {}, // Displays success/error messages encountered during form submission
       callback: null, // Function to run after successful form submission
       submitId: null,
+      submitId: "",
     };
   },
   methods: {

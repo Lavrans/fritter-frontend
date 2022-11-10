@@ -12,6 +12,7 @@ export default {
       method: "POST",
       hasBody: true,
       submitId: "freetForm",
+      submitClass: "justify-end btn-primary",
       fields: [
         {
           id: "content",
@@ -22,7 +23,7 @@ export default {
           id: "friendsOnly",
           label: "Friends Only",
           type: "checkbox",
-          class: "checkbox",
+          class: "checkbox mx-auto translate-y-[-1.5em] bg-white",
         },
       ],
       title: "Create a freet",

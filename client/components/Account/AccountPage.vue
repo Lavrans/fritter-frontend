@@ -2,37 +2,39 @@
 <!-- User should be authenticated in order to see this page -->
 
 <template>
-  <main>
+  <main class="flex flex-wrap justify-around">
     <section>
       <header>
-        <h2>Account settings for @{{ $store.state.username }}</h2>
+        <h2 class="text-xl font-semibold my-12">
+          Account settings for @{{ $store.state.username }}
+        </h2>
       </header>
-      <ChangeUsernameForm />
-      <ChangePasswordForm />
+      <ChangeUsernameForm class="card shadow-lg w-96 my-8" />
+      <ChangePasswordForm class="card shadow-lg w-96 my-8" />
     </section>
     <section>
       <header>
-        <h2>Account management</h2>
+        <h2 class="text-xl font-semibold my-12">Account management</h2>
       </header>
-      <LogoutForm />
-      <DeleteAccountForm />
+      <LogoutForm class="card shadow-lg w-96 my-12" />
+      <DeleteAccountForm class="card shadow-lg w-96 my-12" />
     </section>
   </main>
 </template>
 
 <script>
-import ChangeUsernameForm from '@/components/Account/ChangeUsernameForm.vue';
-import ChangePasswordForm from '@/components/Account/ChangePasswordForm.vue';
-import DeleteAccountForm from '@/components/Account/DeleteAccountForm.vue';
-import LogoutForm from '@/components/Account/LogoutForm.vue';
+import ChangeUsernameForm from "@/components/Account/ChangeUsernameForm.vue";
+import ChangePasswordForm from "@/components/Account/ChangePasswordForm.vue";
+import DeleteAccountForm from "@/components/Account/DeleteAccountForm.vue";
+import LogoutForm from "@/components/Account/LogoutForm.vue";
 
 export default {
-  name: 'AccountPage',
+  name: "AccountPage",
   components: {
     ChangeUsernameForm,
     ChangePasswordForm,
     DeleteAccountForm,
-    LogoutForm
-  }
+    LogoutForm,
+  },
 };
 </script>
