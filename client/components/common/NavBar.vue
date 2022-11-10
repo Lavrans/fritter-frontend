@@ -3,18 +3,49 @@
 <!-- This navbar takes advantage of both flex and grid layouts for positioning elements; feel free to redesign as you see fit! -->
 
 <template>
-  <nav>
-    <div class="left">
+  <nav class="navbar bg-primary text-primary-content">
+    <div class="navbar-start">
+      <div class="dropdown">
+        <label tabindex="0" class="btn btn-ghost lg:hidden">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h8m-8 6h16"
+            />
+          </svg>
+        </label>
+        <ul
+          tabindex="0"
+          class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+        >
+          <li><router-link to="/"> Home </router-link></li>
+          <li><router-link to="/communities"> Communities </router-link></li>
+          <li v-if="$store.state.username">
+            <router-link to="/account"> Account </router-link>
+          </li>
+          <li v-else><router-link to="/login"> Login </router-link></li>
+        </ul>
+      </div>
       <img src="../../public/logo.svg" />
       <h1 class="title">Fritter</h1>
     </div>
-    <div class="right">
-      <router-link to="/"> Home </router-link>
-      <router-link to="/communities"> Communities </router-link>
-      <router-link v-if="$store.state.username" to="/account">
-        Account
-      </router-link>
-      <router-link v-else to="/login"> Login </router-link>
+    <div class="navbar-end hidden lg:flex">
+      <ul class="menu menu-horizontal p-0">
+        <li><router-link to="/"> Home </router-link></li>
+        <li><router-link to="/communities"> Communities </router-link></li>
+        <li v-if="$store.state.username">
+          <router-link to="/account"> Account </router-link>
+        </li>
+        <li v-else><router-link to="/login"> Login </router-link></li>
+      </ul>
     </div>
     <section class="alerts">
       <article
@@ -29,15 +60,6 @@
 </template>
 
 <style scoped>
-nav {
-  padding: 1vw 2vw;
-  background-color: #ccc;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-}
-
 .title {
   font-size: 32px;
   margin: 0 5px;

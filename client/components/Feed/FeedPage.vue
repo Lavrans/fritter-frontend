@@ -14,9 +14,11 @@
           <h2>Viewing @{{ $store.state.username }}'s Feed</h2>
         </div>
       </header>
-      <div class="nav">
-        <router-link to="/"> All Freets </router-link>
-        <router-link to="/feed"> Your Feed </router-link>
+      <div class="tabs flex flex-row mx-auto">
+        <router-link to="/" class="tab tab-bordered"> All Freets </router-link>
+        <router-link to="/feed" class="tab tab-bordered tab-active">
+          Your Feed
+        </router-link>
       </div>
       <section v-if="$store.state.feed.length">
         <FreetComponent

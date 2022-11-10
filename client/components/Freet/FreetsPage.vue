@@ -4,9 +4,24 @@
   <main>
     <section v-if="$store.state.username">
       <header>
-        <h2>Welcome @{{ $store.state.username }}</h2>
+        <h2 class="text-xl font-semibold">
+          Welcome @{{ $store.state.username }}
+        </h2>
       </header>
-      <CreateFreetForm />
+      <label for="freetForm" class="btn fixed bottom-12 right-12 z-10"
+        >Create Freet</label
+      >
+      <input type="checkbox" id="freetForm" class="modal-toggle" />
+      <div class="modal">
+        <div class="modal-box relative">
+          <label
+            for="freetForm"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+            >✕</label
+          >
+          <CreateFreetForm />
+        </div>
+      </div>
     </section>
     <section v-else>
       <header>
@@ -21,27 +36,15 @@
     </section>
     <section>
       <header>
-        <div class="left">
-          <h2>
-            Viewing all freets
-            <span v-if="$store.state.filter">
-              by @{{ $store.state.filter }}
-            </span>
-          </h2>
-        </div>
-        <div class="right">
-          <GetFreetsForm
-            ref="getFreetsForm"
-            value="author"
-            placeholder="🔍 Filter by author (optional)"
-            button="🔄 Get freets"
-          />
+        <div class="tabs flex flex-row mx-auto">
+          <router-link to="/" class="tab tab-bordered tab-active">
+            All Freets
+          </router-link>
+          <router-link to="/feed" class="tab tab-bordered">
+            Your Feed
+          </router-link>
         </div>
       </header>
-      <div class="nav">
-        <router-link to="/"> All Freets </router-link>
-        <router-link to="/feed"> Your Feed </router-link>
-      </div>
       <section v-if="$store.state.freets.length">
         <FreetComponent
           v-for="freet in $store.state.freets"
@@ -65,7 +68,7 @@ export default {
   name: "FreetPage",
   components: { FreetComponent, GetFreetsForm, CreateFreetForm },
   mounted() {
-    this.$refs.getFreetsForm.submit();
+    this.$store.commit("refreshFreets");
   },
 };
 </script>

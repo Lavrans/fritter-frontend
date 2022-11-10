@@ -2,42 +2,53 @@
 <!-- This is just an example; feel free to define any reusable components you want! -->
 
 <template>
-  <form @submit.prevent="submit">
-    <h3>{{ title }}</h3>
-    <article v-if="fields.length">
-      <div v-for="field in fields" :key="field.id">
-        <label :for="field.id">{{ field.label }}:</label>
-        <textarea
-          v-if="field.id === 'content'"
-          :name="field.id"
-          :value="field.value"
-          @input="field.value = $event.target.value"
-        />
-        <input
-          v-else
-          :type="field.type !== undefined ? field.type : 'text'"
-          :ref="field.id"
-          :name="field.id"
-          :value="field.value"
-          @input="field.value = $event.target.value"
-        />
-      </div>
-    </article>
-    <article v-else>
-      <p>{{ content }}</p>
-    </article>
-    <button type="submit">
-      {{ title }}
-    </button>
-    <section class="alerts">
-      <article
-        v-for="(status, alert, index) in alerts"
-        :key="index"
-        :class="status"
-      >
-        <p>{{ alert }}</p>
+  <form @submit.prevent="submit" class="card">
+    <div class="card-body">
+      <h3 class="card-title">{{ title }}</h3>
+      <article v-if="fields.length">
+        <div v-for="field in fields" :key="field.id">
+          <label class="label justify-around gap-0.5">
+            <span v-if="field.label" class="label-text">
+              {{ field.label }}:
+            </span>
+            <textarea
+              v-if="field.id === 'content'"
+              placeholder="Content..."
+              :name="field.id"
+              :value="field.value"
+              :class="field.class ? field.class : ''"
+              @input="field.value = $event.target.value" />
+            <input
+              v-else
+              :type="field.type !== undefined ? field.type : 'text'"
+              :ref="field.id"
+              :name="field.id"
+              :value="field.value"
+              :class="field.class ? field.class : ''"
+              @input="field.value = $event.target.value"
+          /></label>
+        </div>
       </article>
-    </section>
+      <article v-else>
+        <p>{{ content }}</p>
+      </article>
+      <label
+        class="btn btn-sm w-36 mx-auto btn-primary"
+        :for="submitId"
+        @click="submit"
+      >
+        {{ title }}
+      </label>
+      <section class="alerts">
+        <article
+          v-for="(status, alert, index) in alerts"
+          :key="index"
+          :class="status"
+        >
+          <p>{{ alert }}</p>
+        </article>
+      </section>
+    </div>
   </form>
 </template>
 
@@ -62,6 +73,7 @@ export default {
       refreshFreets: false, // Whether or not stored freets should be updated after form submission
       alerts: {}, // Displays success/error messages encountered during form submission
       callback: null, // Function to run after successful form submission
+      submitId: null,
     };
   },
   methods: {
@@ -126,36 +138,36 @@ export default {
 </script>
 
 <style scoped>
-form {
-  border: 1px solid #111;
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-bottom: 14px;
-  position: relative;
-}
-
-article > div {
-  display: flex;
-  flex-direction: column;
-}
-
-form > article p {
-  margin: 0;
-}
-
-form h3,
-form > * {
-  margin: 0.3em 0;
-}
-
-form h3 {
-  margin-top: 0;
-}
-
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-}
+/* form { */
+/*   border: 1px solid #111; */
+/*   padding: 0.5rem; */
+/*   display: flex; */
+/*   flex-direction: column; */
+/*   justify-content: space-between; */
+/*   margin-bottom: 14px; */
+/*   position: relative; */
+/* } */
+/**/
+/* article > div { */
+/*   display: flex; */
+/*   flex-direction: column; */
+/* } */
+/**/
+/* form > article p { */
+/*   margin: 0; */
+/* } */
+/**/
+/* form h3, */
+/* form > * { */
+/*   margin: 0.3em 0; */
+/* } */
+/**/
+/* form h3 { */
+/*   margin-top: 0; */
+/* } */
+/**/
+/* textarea { */
+/*   font-family: inherit; */
+/*   font-size: inherit; */
+/* } */
 </style>
