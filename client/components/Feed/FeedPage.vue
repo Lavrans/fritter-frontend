@@ -4,16 +4,27 @@
   <main>
     <section v-if="$store.state.username">
       <header>
-        <h2>@{{ $store.state.username }}'s Feed</h2>
+        <h2 class="text-xl font-semibold">
+          @{{ $store.state.username }}'s Feed
+        </h2>
       </header>
-      <CreateFreetForm />
+      <label for="freetForm" class="btn fixed bottom-12 right-12 z-10"
+        >Create Freet</label
+      >
+      <input type="checkbox" id="freetForm" class="modal-toggle" />
+      <div class="modal">
+        <div class="modal-box bg-base-300 relative">
+          <label
+            for="freetForm"
+            class="btn btn-sm btn-circle btn-primary absolute right-2 top-2"
+            >✕</label
+          >
+          <CreateFreetForm />
+        </div>
+      </div>
     </section>
     <section>
-      <header>
-        <div class="left">
-          <h2>Viewing @{{ $store.state.username }}'s Feed</h2>
-        </div>
-      </header>
+      <header></header>
       <div class="tabs flex flex-row mx-auto">
         <router-link to="/" class="tab tab-bordered"> All Freets </router-link>
         <router-link to="/feed" class="tab tab-bordered tab-active">

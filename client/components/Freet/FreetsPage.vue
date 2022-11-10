@@ -25,10 +25,10 @@
     </section>
     <section v-else>
       <header>
-        <h2>Welcome to Fritter!</h2>
+        <h2 class="text-xl font-semibold">Welcome to Fritter!</h2>
       </header>
       <article>
-        <h3>
+        <h3 class="text-xl font-semibold">
           <router-link to="/login"> Sign in </router-link>
           to create, edit, and delete freets.
         </h3>

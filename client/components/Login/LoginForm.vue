@@ -12,9 +12,22 @@ export default {
       method: "POST",
       hasBody: true,
       setUsername: true,
+      submitClass: "btn-primary",
       fields: [
-        { id: "username", label: "Username", value: "" },
-        { id: "password", label: "Password", value: "", type: "password" },
+        {
+          id: "username",
+          label: "Username",
+          value: "",
+          class: "input input-bordered input-primary w-full max-w-xs bg-white",
+        },
+        {
+          id: "password",
+          label: "Password",
+          value: "",
+          type: "password",
+          class:
+            "input input-bordered input-primary w-full max-w-xs bg-white js-password",
+        },
       ],
       title: "Sign in",
       callback: () => {

@@ -17,6 +17,7 @@ export default {
           id: "password",
           label: "Password",
           value: "",
+          type: "password",
           class: "input input-bordered input-primary w-full max-w-xs bg-white",
         },
       ],
