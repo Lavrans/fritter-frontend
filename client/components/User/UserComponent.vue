@@ -1,20 +1,33 @@
 <template>
-  <article class="user">
-    <h1>{{ user.username }}</h1>
-    <p v-if="user.friends">You are friends</p>
-    <p v-else-if="user.following">You are following</p>
-    <p v-else>You are not following</p>
-    <button @click="unfollow" v-if="user.following">Unfollow</button>
-    <button @click="follow" v-else>Follow</button>
-    <section class="alerts">
-      <article
-        v-for="(status, alert, index) in alerts"
-        :key="index"
-        :class="status"
+  <article class="card shadow-lg w-full bg-base-200">
+    <div class="card-body">
+      <h1 class="card-title text-xl font-semibold">User</h1>
+      <h1 class="card-title text-xl font-semibold">@{{ user.username }}</h1>
+      <div v-if="$store.state.username !== user.username">
+        <p v-if="user.friends" class="text-success">You are friends</p>
+        <p v-else-if="user.following" class="text-info">You are following</p>
+        <p v-else class="text-info">You are not following</p>
+      </div>
+      <div v-else><p class="text-info">This is you</p></div>
+      <div
+        v-if="$store.state.username !== user.username"
+        class="card-actions justify-end"
       >
-        <p>{{ alert }}</p>
-      </article>
-    </section>
+        <button @click="unfollow" v-if="user.following" class="btn btn-accent">
+          Unfollow
+        </button>
+        <button @click="follow" v-else class="btn btn-primary">Follow</button>
+      </div>
+      <section class="alerts">
+        <article
+          v-for="(status, alert, index) in alerts"
+          :key="index"
+          :class="status"
+        >
+          <p>{{ alert }}</p>
+        </article>
+      </section>
+    </div>
   </article>
 </template>
 
@@ -87,7 +100,7 @@ export default {
 
         params.callback();
       } catch (e) {
-        this.$set(this.alerts, e, "error");
+        this.$store.commit("alert", { message: e, status: "error" });
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
     },
@@ -95,11 +108,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.user {
-  border: 1px solid #111;
-  padding: 20px;
-  display: block;
-  width: 100%;
-}
-</style>
+<style scoped></style>

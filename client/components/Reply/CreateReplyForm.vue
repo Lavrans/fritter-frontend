@@ -22,7 +22,15 @@ export default {
     return {
       method: "POST",
       hasBody: true,
-      fields: [{ id: "content", label: "Content", value: "" }],
+      submitId: "freetForm",
+      submitClass: "justify-end btn-primary",
+      fields: [
+        {
+          id: "content",
+          value: "",
+          class: "textarea-bordered textarea textarea-success w-full",
+        },
+      ],
       title: "Create a reply",
       refreshReplies: true,
       callback: () => {
@@ -31,7 +39,7 @@ export default {
           id: this.id,
           parent: this.parent,
         });
-        this.$set(this.alerts, message, "success");
+        this.$store.commit("alert", { message, status: "success" });
         setTimeout(() => this.$delete(this.alerts, message), 3000);
       },
     };

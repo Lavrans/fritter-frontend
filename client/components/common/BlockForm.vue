@@ -136,7 +136,7 @@ export default {
           this.callback();
         }
       } catch (e) {
-        this.$set(this.alerts, e, "error");
+        this.$store.commit("alert", { message: e, status: "error" });
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
     },
@@ -144,37 +144,4 @@ export default {
 };
 </script>
 
-<style scoped>
-/* form { */
-/*   border: 1px solid #111; */
-/*   padding: 0.5rem; */
-/*   display: flex; */
-/*   flex-direction: column; */
-/*   justify-content: space-between; */
-/*   margin-bottom: 14px; */
-/*   position: relative; */
-/* } */
-/**/
-/* article > div { */
-/*   display: flex; */
-/*   flex-direction: column; */
-/* } */
-/**/
-/* form > article p { */
-/*   margin: 0; */
-/* } */
-/**/
-/* form h3, */
-/* form > * { */
-/*   margin: 0.3em 0; */
-/* } */
-/**/
-/* form h3 { */
-/*   margin-top: 0; */
-/* } */
-/**/
-/* textarea { */
-/*   font-family: inherit; */
-/*   font-size: inherit; */
-/* } */
-</style>
+<style scoped></style>

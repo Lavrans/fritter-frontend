@@ -82,11 +82,13 @@ class FeedCollection {
    * @param {string} freetId - The id of freet to remove from all feeds
    * @return {Promise<Boolean>} - false if the freet is in no documents, otherwise true
    */
-  static async removeContent(freetId: Types.ObjectId): Promise<boolean> {
-    const feed = await FeedModel.find({ content: freetId });
+  static async removeContent(freets: Types.ObjectId[]): Promise<boolean> {
+    const feed = await FeedModel.find({ content: freets });
     feed.forEach(async (f) => {
-      const index = f.content.indexOf(freetId);
-      f.content.splice(index, 1);
+      freets.forEach((freetId) => {
+        const index = f.content.indexOf(freetId);
+        index != -1 && f.content.splice(index, 1);
+      });
       await f.save();
     });
     return feed != null;

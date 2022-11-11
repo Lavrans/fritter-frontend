@@ -29,7 +29,7 @@
       </header>
       <article>
         <h3 class="text-xl font-semibold">
-          <router-link to="/login"> Sign in </router-link>
+          <router-link class="btn-link" to="/login"> Sign in </router-link>
           to create, edit, and delete freets.
         </h3>
       </article>

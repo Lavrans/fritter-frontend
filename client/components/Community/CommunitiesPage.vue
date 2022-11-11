@@ -4,9 +4,22 @@
   <main>
     <section>
       <header>
-        <h2>Communities</h2>
+        <h2 class="text-xl font-semibold">Communities</h2>
       </header>
-      <CreateCommunityForm />
+      <label for="communityForm" class="btn fixed bottom-12 right-12 z-10"
+        >Create Community</label
+      >
+      <input type="checkbox" id="communityForm" class="modal-toggle" />
+      <div class="modal">
+        <div class="modal-box bg-base-300 relative">
+          <label
+            for="communityForm"
+            class="btn btn-sm btn-circle btn-primary absolute right-2 top-2"
+            >✕</label
+          >
+          <CreateCommunityForm />
+        </div>
+      </div>
     </section>
     <section>
       <section v-if="$store.state.communities.length">

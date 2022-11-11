@@ -15,13 +15,22 @@ export default {
       url: "/api/freets",
       method: "POST",
       hasBody: true,
-      fields: [{ id: "content", label: "Content", value: "" }],
-      title: "Create a freet",
+      submitId: "freetForm",
+      submitClass: "justify-end btn-primary h-full",
+      fields: [
+        {
+          id: "content",
+          label: "Content",
+          value: "",
+          class: "textarea-bordered textarea textarea-success w-full",
+        },
+      ],
+      title: "Create Community Freet",
       refreshFreets: true,
       callback: () => {
         this.$store.commit("refreshCommunityFeed");
         const message = "Successfully created a freet!";
-        this.$set(this.alerts, message, "success");
+        this.$store.commit("alert", { message, status: "success" });
         setTimeout(() => this.$delete(this.alerts, message), 3000);
       },
     };

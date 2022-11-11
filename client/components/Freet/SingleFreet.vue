@@ -7,11 +7,24 @@
     />
 
     <h3>Replies</h3>
-    <CreateReplyForm
-      :url="'/api/replies/freet/' + $store.state.freet._id"
-      :id="$store.state.freet._id"
-      :parent="'freet'"
-    />
+    <label for="freetForm" class="btn fixed bottom-12 right-12 z-10"
+      >Create Reply</label
+    >
+    <input type="checkbox" id="freetForm" class="modal-toggle" />
+    <div class="modal">
+      <div class="modal-box bg-base-300 relative">
+        <label
+          for="freetForm"
+          class="btn btn-sm btn-circle btn-primary absolute right-2 top-2"
+          >✕</label
+        >
+        <CreateReplyForm
+          :url="'/api/replies/freet/' + $store.state.freet._id"
+          :id="$store.state.freet._id"
+          :parent="'freet'"
+        />
+      </div>
+    </div>
     <div class="replies">
       <ReplyComponent
         v-for="reply in $store.state.replies"

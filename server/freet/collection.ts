@@ -132,7 +132,7 @@ class FreetCollection {
    * @return {Promise<Boolean>} - true if the freet has been deleted, false otherwise
    */
   static async deleteOne(freetId: Types.ObjectId | string): Promise<boolean> {
-    await FeedCollection.removeContent(new T.ObjectId(freetId));
+    await FeedCollection.removeContent([new T.ObjectId(freetId)]);
     const freet = await FreetModel.deleteOne({ _id: freetId });
     return freet !== null;
   }
@@ -144,8 +144,8 @@ class FreetCollection {
    */
   static async deleteMany(authorId: Types.ObjectId | string): Promise<void> {
     const freets = await FreetModel.find({ authorId });
+    await FeedCollection.removeContent(freets.map((f) => f._id));
     freets.forEach(async (f) => {
-      await FeedCollection.removeContent(f._id);
       await f.delete();
     });
   }

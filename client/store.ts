@@ -127,7 +127,6 @@ const store = new Vuex.Store({
       const res = await fetch(url);
       const json = await res.json();
       if (res.status === 200) state.communityFeed = json.feed.content;
-      if (res.status === 404) router.push("/notFound");
     },
     async refreshReply(state, replyId) {
       const url = `/api/replies/${replyId}`;

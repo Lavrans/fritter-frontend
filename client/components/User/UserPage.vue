@@ -3,9 +3,12 @@
 <template>
   <main>
     <header>
-      <UserComponent :user="$store.state.user" />
+      <UserComponent :user="$store.state.user" class="mt-8" />
     </header>
 
+    <h2 class="text-xl my-12 font-semibold">
+      @{{ $store.state.user.username }}'s Freets
+    </h2>
     <section v-if="$store.state.freets.length">
       <FreetComponent
         v-for="freet in $store.state.freets"
@@ -13,6 +16,7 @@
         :freet="freet"
       />
     </section>
+    <section v-else><h2>No Freets found.</h2></section>
   </main>
 </template>
 
@@ -31,26 +35,4 @@ export default {
 };
 </script>
 
-<style scoped>
-section {
-  display: flex;
-  flex-direction: column;
-}
-
-header,
-header > * {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-button {
-  margin-right: 10px;
-}
-
-section .scrollbox {
-  flex: 1 0 50vh;
-  padding: 3%;
-  overflow-y: scroll;
-}
-</style>
+<style scoped></style>

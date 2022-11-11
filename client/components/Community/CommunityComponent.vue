@@ -1,12 +1,12 @@
 <template>
-  <article class="community">
+  <article class="card shadow-lg w-full p-12 my-6 bg-base-200">
     <header>
-      <h3>Community</h3>
+      <h3 class="card-title">Community</h3>
       <h3 class="Name">
         Name:
         <router-link
           :to="{ name: 'Community', params: { communityName: community.name } }"
-          class="link"
+          class="btn-link"
         >
           {{ community.name }}
         </router-link>
@@ -16,16 +16,63 @@
       Owner:
       <router-link
         :to="{ name: 'User', params: { username: community.owner } }"
+        class="btn-link"
       >
         @{{ community.owner }}
       </router-link>
     </h4>
-    <div v-if="$store.state.username.length">
-      <button @click="joinCommunity" v-if="!community.isMember">Join</button>
-      <button @click="leaveCommunity" v-else>Leave</button>
-    </div>
-    <div v-if="$store.state.username === community.owner">
-      <button @click="deleteCommunity">🗑️Delete</button>
+    <div class="card-actions justify-end">
+      <div v-if="$store.state.username && $store.state.username.length">
+        <button
+          @click="joinCommunity"
+          v-if="!community.isMember"
+          class="btn btn-success"
+        >
+          Join
+        </button>
+        <button
+          @click="leaveCommunity"
+          v-if="$store.state.username !== community.owner && community.isMember"
+          class="btn btn-accent"
+        >
+          Leave
+        </button>
+      </div>
+      <label
+        v-if="$store.state.username === community.owner"
+        :for="'delete-community-modal' + community._id"
+        class="btn btn-error"
+        >🗑️Delete</label
+      >
+      <input
+        type="checkbox"
+        :id="'delete-community-modal' + community._id"
+        class="modal-toggle"
+      />
+      <div class="modal">
+        <div class="modal-box relative bg-base-100">
+          <p>
+            Are you sure you want to delete? This is an irreversible action.
+          </p>
+          <div class="flex justify-between">
+            <label
+              :for="'delete-community-modal' + community._id"
+              class="btn btn-outline btn-warning"
+              >Cancel</label
+            >
+            <label
+              @click="deleteCommunity"
+              :for="'delete-community-modal' + community._id"
+              class="btn btn-error btn-outline"
+            >
+              Delete
+            </label>
+          </div>
+        </div>
+      </div>
+      <!-- <div v-if="$store.state.username === community.owner"> -->
+      <!--   <button @click="deleteCommunity">🗑️Delete</button> -->
+      <!-- </div> -->
     </div>
     <section class="alerts">
       <article

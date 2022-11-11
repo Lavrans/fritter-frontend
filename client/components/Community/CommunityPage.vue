@@ -4,17 +4,58 @@
   <main>
     <header>
       <CommunityComponent :community="$store.state.community" />
-      <CreateCommunityFreetForm :community="$store.state.community._id" />
-      <div v-if="$store.state.username === $store.state.community.owner">
-        <label for="newOwnerUserName">Change Owner: </label>
-        <input
-          type="text"
-          id="newOwnerUserName"
-          name="newOwnerUserName"
-          :value="newOwnerUserName"
-          @input="(event) => (newOwnerUserName = event.target.value)"
-        />
-        <button @click="changeOwner">Change Owner</button>
+      <label for="freetForm" class="btn fixed bottom-12 right-12 z-10"
+        >Create Freet</label
+      >
+      <input type="checkbox" id="freetForm" class="modal-toggle" />
+      <div class="modal">
+        <div class="modal-box bg-base-300 relative">
+          <label
+            for="freetForm"
+            class="btn btn-sm btn-circle btn-primary absolute right-2 top-2"
+            >✕</label
+          >
+          <CreateCommunityFreetForm :community="$store.state.community._id" />
+        </div>
+      </div>
+      <label
+        for="manage-modal"
+        v-if="$store.state.username === $store.state.community.owner"
+        class="btn btn-primary"
+        >Mange Community</label
+      >
+
+      <input type="checkbox" id="manage-modal" class="modal-toggle" />
+      <div class="modal">
+        <div class="modal-box bg-base-200 relative">
+          <label
+            for="manage-modal"
+            class="btn btn-sm btn-circle absolute right-2 top-2"
+            >✕</label
+          >
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title">Change Community Owner</h2>
+              <input
+                class="input w-full max-w-xs input-bordered"
+                type="text"
+                id="newOwnerUserName"
+                name="newOwnerUserName"
+                :value="newOwnerUserName"
+                placeholder="New owner's username"
+                @input="(event) => (newOwnerUserName = event.target.value)"
+              />
+              <div class="card-actions justify-around">
+                <label
+                  for="manage-modal"
+                  class="btn btn-accent"
+                  @click="changeOwner"
+                  >Change Owner</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <section class="alerts">
         <article
@@ -27,12 +68,21 @@
       </section>
     </header>
 
-    <section v-if="$store.state.communityFeed.length">
+    <section v-if="$store.state.communityFeed.length && loaded">
+      <h2 class="text-xl font-semibold">
+        {{ $store.state.community.name }} Freets
+      </h2>
       <FreetComponent
         v-for="freet in $store.state.communityFeed"
         :key="freet.id"
         :freet="freet"
       />
+    </section>
+    <section v-else>
+      <h2 class="text-xl font-semibold">
+        {{ $store.state.community.name }} Freets
+      </h2>
+      <h2 class="text-lg font-semibold">No Freets found.</h2>
     </section>
   </main>
 </template>
@@ -49,6 +99,7 @@ export default {
     return {
       newOwnerUserName: "",
       alerts: {},
+      loaded: false,
     };
   },
   async created() {
@@ -56,7 +107,10 @@ export default {
       "refreshCommunity",
       this.$route.params.communityName
     );
-    await this.$store.commit("refreshCommunityFeed");
+    setTimeout(() => {
+      this.$store.commit("refreshCommunityFeed");
+      this.loaded = true;
+    }, 1000);
   },
   methods: {
     changeOwner() {
@@ -92,33 +146,19 @@ export default {
 
         params.callback();
       } catch (e) {
-        console.log(this.alerts);
-        this.$set(this.alerts, e, "error");
-        setTimeout(() => this.$delete(this.alerts, e), 3000);
+        let message = "";
+        if (
+          e == `Error: You are the owner of ${this.$store.state.community.name}`
+        ) {
+          message = "Username cannot be blank.";
+        } else {
+          message = e;
+        }
+        this.$store.commit("alert", { message, status: "error" });
       }
     },
   },
 };
 </script>
 
-<style scoped>
-section {
-  display: flex;
-  flex-direction: column;
-}
-
-button {
-  margin-right: 10px;
-}
-
-section .scrollbox {
-  flex: 1 0 50vh;
-  padding: 3%;
-  overflow-y: scroll;
-}
-.alerts {
-  display: block;
-  position: static;
-  transform: translate(0, 0);
-}
-</style>
+<style scoped></style>
