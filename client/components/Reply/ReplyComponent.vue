@@ -17,7 +17,7 @@
         >
 
         <h3 v-if="singleView" class="card-title my-4 pt-2">Reply</h3>
-        <h2 class="author-link card-title">
+        <h2 class="btn-link card-title">
           <router-link
             :to="{ name: 'User', params: { username: reply.author } }"
           >

@@ -8,6 +8,7 @@
         <h3 v-if="singleView" class="card-title">Freet</h3>
         <h2 class="author-link card-title">
           <router-link
+            class="btn-link"
             :to="{ name: 'User', params: { username: freet.author } }"
           >
             @{{ freet.author }}
